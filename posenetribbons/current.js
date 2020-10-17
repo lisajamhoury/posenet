@@ -2,14 +2,6 @@ let poses = [];
 let positions = [];
 let video;
 
-let posePosition = null;
-
-// for recording data
-let recordButton;
-let recordedData = [];
-let startTime;
-let recordingStarted = false;
-
 // for playing back data
 let liveData = false;
 let recordedPositions;
@@ -27,9 +19,6 @@ function preload() {
 
 function setup() {
 	createCanvas(640, 480);
-
-	recordButton = createButton("Toggle Recording");
-	recordButton.mousePressed(toggleRecording);
 
 	video = createCapture(VIDEO);
 	video.size(width, height);
@@ -83,10 +72,6 @@ function draw() {
 	drawKeypoints();
 	drawSkeleton();
 	drawWrists();
-	// const topMost = getTopMostPoint();
-
-	// fill("black");
-	// ellipse(topMost.x, topMost.y, 20);
 
 	push();
 	scale(0.25, 0.25);
@@ -97,10 +82,6 @@ function draw() {
 // The callback that gets called every time there's an update from the model
 function gotPose(results) {
 	poses = results;
-
-	if (recordingStarted) {
-		recordData(results);
-	}
 }
 
 function drawKeypoints() {
@@ -159,42 +140,6 @@ function drawWrists() {
 // When the model is loaded
 function modelLoaded() {
 	console.log("Model Loaded!");
-}
-
-// function getTopMostPoint() {
-// 	// find topmost keypoint
-// 	let topMost = {};
-// 	topMost.y = height;
-
-// 	const keypoints = poses[0].pose.keypoints;
-// 	for (let i = 0; i < keypoints.length; i++) {
-// 		const keypoint = keypoints[i].position;
-
-// 		if (keypoint.y < topMost.y) {
-// 			topMost.x = keypoint.x;
-// 			topMost.y = keypoint.y;
-// 		}
-// 	}
-// 	return topMost;
-// }
-
-function recordData(data) {
-	console.log("recording data");
-	let newData = {
-		pose: data,
-		timeStamp: Date.now(),
-	};
-	recordedData.push(newData);
-}
-
-function toggleRecording() {
-	if (!recordingStarted) {
-		recordingStarted = true;
-	} else {
-		downloadObjectAsJson(recordedData, "posedata");
-		recordingStarted = false;
-	}
-	å
 }
 
 // from https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
